@@ -1,3 +1,4 @@
+# PART 1
 # 1 - INSTALL DE DOCKER
 
 Selon mes connaissances ancestrales (grâce à la doc surtout), voici comment installer docker sur une machine
@@ -82,9 +83,69 @@ toto@zizicopter:~$
 ```
 On le voit ci-dessus : plus besoin de sudo
 
+# 2 - USE IT 
+### a - commencer lancer un docker
+On va maintenant mettre les mains dans le cambouis en lançant notre premier conteneur !
+
+```docker run --name web -d -v /home/toto/nginx:/usr/share/nginx/html -p 9999:80 nginx```
+Ici --> on lance un conteneur a partir de l'image nginx, ou son nom sera web (--name) et ou le port machine 8888 sera connecté au port 80 du conteneur (-p)
+        Le -d signifie que le conteneur tourne en arrière plan. Le -v /home/toto/nginx:/usr/share/nginx/html monte le répertoire /home/toto/nginx de ta machine locale à l'intérieur du conteneur, dans le répertoire /usr/share/nginx/html. Cela permet à Nginx, à l'intérieur du conteneur, d'avoir accès aux fichiers HTML présents sur la machine
+
+```
+toto@zizicopter:~/nginx$ docker run --name web -d -v /home/toto/nginx:/usr/share/nginx/html -p 9999:80 nginx
+ecf3aa351af879d14fe36efdd957c8e8181a79d7e87c0b4631507d258e773564
+toto@zizicopter:~/nginx$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                     NAMES
+ecf3aa351af8   nginx     "/docker-entrypoint.…"   4 seconds ago   Up 3 seconds   0.0.0.0:9999->80/tcp, [::]:9999->80/tcp   web
+toto@zizicopter:~/nginx$
+```
+
+Je sais pas comment je vais expliquer ça, j'ai pas de fw sur la machine, ouvert le port sur azure...
+
+```
+PS C:\Users\Jessy> curl http://172.187.219.45:9999
+
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : Welcome to nginx
+
+RawContent        : HTTP/1.1 200 OK
+                    Connection: keep-alive
+                    Accept-Ranges: bytes
+                    Content-Length: 17
+                    Content-Type: text/html
+                    Date: Mon, 17 Mar 2025 21:57:35 GMT
+                    ETag: "67d89abf-11"
+                    Last-Modified: Mon, 17 Mar 2025 21...
+Forms             : {}
+Headers           : {[Connection, keep-alive], [Accept-Ranges, bytes], [Content-Length, 17], [Content-Type,
+                    text/html]...}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : mshtml.HTMLDocumentClass
+RawContentLength  : 17
 
 
 
+PS C:\Users\Jessy>
+```
+### b - comment custom le lancement d'un docker 
+On custom le launch de ce conteneur : 
 
-
+```
+toto@zizicopter:~/nginx$ docker run --name meow \
+>   -d \
+>   -v /home/toto/nginx.conf:/etc/nginx/conf.d/custom.conf \
+>   -v /home/toto/tp_docker:/var/www/tp_docker \
+>   -p 7777:7777 \
+>   --memory=512m \
+>   nginx
+8deadcd8af56e49a4880ff87b05807a5548a5a891823cd76ce0651fe5505a112
+toto@zizicopter:~/nginx$
+```
+Expliquons en bref --> --name pour l'appeler meow (chef, c'est quoi ce nom ???) 
+                        -v lie mon fichier de conf et .html de la machine a ceux du docker
+                        -p set les ports d'écoute sur 7777 et 7777 de la machine et du docker
 

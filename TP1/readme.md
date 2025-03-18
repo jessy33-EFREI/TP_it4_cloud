@@ -149,3 +149,31 @@ Expliquons en bref --> --name pour l'appeler meow (chef, c'est quoi ce nom ???)
                         -v lie mon fichier de conf et .html de la machine a ceux du docker
                         -p set les ports d'écoute sur 7777 et 7777 de la machine et du docker
 
+# PART 2
+
+# 1- IMAGES 
+
+Aujourd'hui, on va construire notre propre image :
+
+```
+FROM debian
+
+RUN apt update -y
+
+RUN apt install -y apache2
+
+COPY index.html /var/www/html/
+
+ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+```
+Dans l'ordre, ça donne :
+
+--> image de base debian
+--> mise à jour du système
+--> installation de Apache (pour les systèmes debian, le serveur Web apache s'appelle apache2 et non pas httpd comme sur Rocky)
+--> page d'accueil Apache HTML personnalisée
+--> lance le serveur Apache en mode premier plan (FOREGROUND), ce qui est nécessaire pour que le serveur continue de fonctionner en arrière-plan et ne termine pas son exécution dès que le conteneur démarre
+
+# PART 3 
+
+# 1 - DOCKER COMPOSE
